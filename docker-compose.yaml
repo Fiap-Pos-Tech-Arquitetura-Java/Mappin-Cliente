@@ -1,0 +1,23 @@
+version : '3'
+services:
+  app:
+    image: 'mappin-cliente-docker-image'
+    build:
+      context: .
+    container_name: 'mappin-cliente-docker-container'
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/mappin-cliente-db
+      - SPRING_DATASOURCE_USERNAME=mappin
+      - SPRING_DATASOURCE_PASSWORD=mappinCliente
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+  db:
+    image: postgres:latest
+    container_name: mappin-cliente-db
+    environment:
+      - POSTGRES_USER=mappin
+      - POSTGRES_PASSWORD=mappinCliente
+      - POSTGRES_DB=mappin-cliente-db

@@ -1,0 +1,258 @@
+
+
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "content": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "nome": {
+              "type": "string"
+            },
+            "cpf": {
+              "type": "string"
+            },
+            "endereco": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "rua": {
+                  "type": "string"
+                },
+                "numero": {
+                  "type": "string"
+                },
+                "cep": {
+                  "type": "string"
+                },
+                "cidade": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "rua",
+                "numero",
+                "cep",
+                "cidade"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "nome",
+            "cpf",
+            "endereco"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "nome": {
+              "type": "string"
+            },
+            "cpf": {
+              "type": "string"
+            },
+            "endereco": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "rua": {
+                  "type": "string"
+                },
+                "numero": {
+                  "type": "string"
+                },
+                "cep": {
+                  "type": "string"
+                },
+                "cidade": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "rua",
+                "numero",
+                "cep",
+                "cidade"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "nome",
+            "cpf",
+            "endereco"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "nome": {
+              "type": "string"
+            },
+            "cpf": {
+              "type": "string"
+            },
+            "endereco": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "rua": {
+                  "type": "string"
+                },
+                "numero": {
+                  "type": "string"
+                },
+                "cep": {
+                  "type": "string"
+                },
+                "cidade": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "rua",
+                "numero",
+                "cep",
+                "cidade"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "nome",
+            "cpf",
+            "endereco"
+          ]
+        }
+      ]
+    },
+    "pageable": {
+      "type": "object",
+      "properties": {
+        "pageNumber": {
+          "type": "integer"
+        },
+        "pageSize": {
+          "type": "integer"
+        },
+        "sort": {
+          "type": "object",
+          "properties": {
+            "unsorted": {
+              "type": "boolean"
+            },
+            "sorted": {
+              "type": "boolean"
+            },
+            "empty": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "unsorted",
+            "sorted",
+            "empty"
+          ]
+        },
+        "offset": {
+          "type": "integer"
+        },
+        "unpaged": {
+          "type": "boolean"
+        },
+        "paged": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "pageNumber",
+        "pageSize",
+        "sort",
+        "offset",
+        "unpaged",
+        "paged"
+      ]
+    },
+    "totalPages": {
+      "type": "integer"
+    },
+    "totalElements": {
+      "type": "integer"
+    },
+    "last": {
+      "type": "boolean"
+    },
+    "numberOfElements": {
+      "type": "integer"
+    },
+    "first": {
+      "type": "boolean"
+    },
+    "size": {
+      "type": "integer"
+    },
+    "number": {
+      "type": "integer"
+    },
+    "sort": {
+      "type": "object",
+      "properties": {
+        "unsorted": {
+          "type": "boolean"
+        },
+        "sorted": {
+          "type": "boolean"
+        },
+        "empty": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "unsorted",
+        "sorted",
+        "empty"
+      ]
+    },
+    "empty": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "content",
+    "pageable",
+    "totalPages",
+    "totalElements",
+    "last",
+    "numberOfElements",
+    "first",
+    "size",
+    "number",
+    "sort",
+    "empty"
+  ]
+}
+
