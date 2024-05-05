@@ -131,7 +131,7 @@ class ClienteServiceTest {
             var novoCliente = new Cliente(
                     RandomStringUtils.random(20, true, true),
                     cliente.getCpf(),
-                    new Endereco("do centro","41B","54321542","São Paulo/SP/Brasil")
+                    new Endereco("do centro","41B","54521542","São Paulo/SP/Brasil")
             );
             novoCliente.setId(cliente.getId());
             when(clienteRepository.findById(cliente.getId())).thenReturn(Optional.of(cliente));
