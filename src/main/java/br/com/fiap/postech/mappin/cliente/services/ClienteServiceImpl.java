@@ -1,7 +1,6 @@
 package br.com.fiap.postech.mappin.cliente.services;
 
 import br.com.fiap.postech.mappin.cliente.entities.Cliente;
-import br.com.fiap.postech.mappin.cliente.entities.Endereco;
 import br.com.fiap.postech.mappin.cliente.repository.ClienteRepository;
 import br.com.fiap.postech.mappin.cliente.repository.EnderecoRepository;
 import io.micrometer.common.util.StringUtils;
@@ -57,7 +56,7 @@ public class ClienteServiceImpl implements ClienteService {
             throw new IllegalArgumentException("Não é possível alterar o id de um cliente.");
         }
         if (clienteParam.getCpf() != null && !cliente.getCpf().equals(clienteParam.getCpf())) {
-            throw new IllegalArgumentException("Não é possível alterar o email de um cliente.");
+            throw new IllegalArgumentException("Não é possível alterar o cpf de um cliente.");
         }
         if (StringUtils.isNotEmpty(clienteParam.getNome())) {
             cliente.setNome(clienteParam.getNome());
@@ -68,7 +67,7 @@ public class ClienteServiceImpl implements ClienteService {
             } else {
                 if (enderecoRepository.existsById(clienteParam.getEndereco().getId())) {
                     throw new IllegalArgumentException("Endereco não encontrado com o ID: "
-                            + clienteParam.getEndereco().getId() + " para o Cliente" + id);
+                            + clienteParam.getEndereco().getId() + " para o Cliente " + id);
                 }
             }
         }

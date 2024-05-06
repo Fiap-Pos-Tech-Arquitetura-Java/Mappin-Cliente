@@ -66,6 +66,20 @@ class ClienteServiceTest {
             assertThat(clienteSalvo.getId()).isNotNull();
             verify(clienteRepository, times(1)).save(any(Cliente.class));
         }
+
+        @Test
+        void deveGerarExcecao_QuandoCadastrarCliente_cpfExistente() {
+            // Arrange
+            var cliente = ClienteHelper.getCliente(true);
+            when(clienteRepository.findByCpf(cliente.getCpf())).thenReturn(Optional.of(cliente));
+            // Act
+            assertThatThrownBy(() -> clienteService.save(cliente))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Já existe um cliente cadastrado com esse cpf.");
+            // Assert
+            verify(clienteRepository, times(1)).findByCpf(anyString());
+            verify(clienteRepository, never()).save(any(Cliente.class));
+        }
     }
 
     @Nested
@@ -150,6 +164,79 @@ class ClienteServiceTest {
         }
 
         @Test
+        void devePermitirAlterarCliente_enderecoComId() {
+            // Arrange
+            var cliente = ClienteHelper.getCliente(true);
+            var clienteReferencia = new Cliente(cliente.getNome(), cliente.getCpf(), cliente.getEndereco());
+            var novoCliente = new Cliente(
+                    RandomStringUtils.random(20, true, true),
+                    cliente.getCpf(),
+                    new Endereco("do centro","41B","54521542","São Paulo/SP/Brasil")
+            );
+            novoCliente.setId(cliente.getId());
+            novoCliente.getEndereco().setId(UUID.randomUUID());
+            when(clienteRepository.findById(cliente.getId())).thenReturn(Optional.of(cliente));
+            when(clienteRepository.save(any(Cliente.class))).thenAnswer(r -> r.getArgument(0));
+            // Act
+            var clienteSalvo = clienteService.update(cliente.getId(), novoCliente);
+            // Assert
+            assertThat(clienteSalvo)
+                    .isInstanceOf(Cliente.class)
+                    .isNotNull();
+            assertThat(clienteSalvo.getNome()).isEqualTo(novoCliente.getNome());
+            assertThat(clienteSalvo.getNome()).isNotEqualTo(clienteReferencia.getNome());
+
+            verify(clienteRepository, times(1)).findById(any(UUID.class));
+            verify(clienteRepository, times(1)).save(any(Cliente.class));
+        }
+
+        @Test
+        void deveGerarExcecao_QuandoAlterarEnderecoPorId_idNaoExiste() {
+            // Arrange
+            var cliente = ClienteHelper.getCliente(true);
+            var novoCliente = new Cliente(
+                    RandomStringUtils.random(20, true, true),
+                    cliente.getCpf(),
+                    new Endereco("do centro","41B","54521542","São Paulo/SP/Brasil")
+            );
+            novoCliente.setId(cliente.getId());
+            cliente.getEndereco().setId(UUID.randomUUID());
+            when(clienteRepository.findById(cliente.getId())).thenReturn(Optional.of(cliente));
+            when(enderecoRepository.existsById(cliente.getEndereco().getId())).thenReturn(Boolean.TRUE);
+            // Act && Assert
+            assertThatThrownBy(() -> clienteService.update(cliente.getId(), cliente))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Endereco não encontrado com o ID: "
+                            + cliente.getEndereco().getId() + " para o Cliente " + cliente.getId());
+
+            verify(clienteRepository, times(1)).findById(any(UUID.class));
+            verify(enderecoRepository, times(1)).existsById(any(UUID.class));
+            verify(clienteRepository, never()).save(any(Cliente.class));
+        }
+
+        @Test
+        void devePermitirAlterarCliente_semBody() {
+            // Arrange
+            var cliente = ClienteHelper.getCliente(true);
+            var clienteReferencia = new Cliente(cliente.getNome(), cliente.getCpf(), cliente.getEndereco());
+            var novoCliente = new Cliente(null, null, null);
+
+            novoCliente.setId(cliente.getId());
+            when(clienteRepository.findById(cliente.getId())).thenReturn(Optional.of(cliente));
+            when(clienteRepository.save(any(Cliente.class))).thenAnswer(r -> r.getArgument(0));
+            // Act
+            var clienteSalvo = clienteService.update(cliente.getId(), novoCliente);
+            // Assert
+            assertThat(clienteSalvo)
+                    .isInstanceOf(Cliente.class)
+                    .isNotNull();
+            assertThat(clienteSalvo.getNome()).isEqualTo(clienteReferencia.getNome());
+
+            verify(clienteRepository, times(1)).findById(any(UUID.class));
+            verify(clienteRepository, times(1)).save(any(Cliente.class));
+        }
+
+        @Test
         void deveGerarExcecao_QuandoAlterarClientePorId_idNaoExiste() {
             // Arrange
             var cliente = ClienteHelper.getCliente(true);
@@ -159,6 +246,38 @@ class ClienteServiceTest {
             assertThatThrownBy(() -> clienteService.update(uuid, cliente))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("Cliente não encontrado com o ID: " + cliente.getId());
+            verify(clienteRepository, times(1)).findById(any(UUID.class));
+            verify(clienteRepository, never()).save(any(Cliente.class));
+        }
+
+        @Test
+        void deveGerarExcecao_QuandoAlterarClientePorId_alterandoId() {
+            // Arrange
+            var cliente = ClienteHelper.getCliente(true);
+            var clienteParam = ClienteHelper.getCliente(true);
+            when(clienteRepository.findById(cliente.getId())).thenReturn(Optional.of(cliente));
+            UUID uuid = cliente.getId();
+            // Act && Assert
+            assertThatThrownBy(() -> clienteService.update(uuid, clienteParam))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Não é possível alterar o id de um cliente.");
+            verify(clienteRepository, times(1)).findById(any(UUID.class));
+            verify(clienteRepository, never()).save(any(Cliente.class));
+        }
+
+        @Test
+        void deveGerarExcecao_QuandoAlterarClientePorId_alterandoCpf() {
+            // Arrange
+            var cliente = ClienteHelper.getCliente(true);
+            var clienteParam = ClienteHelper.getCliente(true);
+            clienteParam.setId(cliente.getId());
+            clienteParam.setCpf("03485066001");
+            when(clienteRepository.findById(cliente.getId())).thenReturn(Optional.of(cliente));
+            UUID uuid = cliente.getId();
+            // Act && Assert
+            assertThatThrownBy(() -> clienteService.update(uuid, clienteParam))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Não é possível alterar o cpf de um cliente.");
             verify(clienteRepository, times(1)).findById(any(UUID.class));
             verify(clienteRepository, never()).save(any(Cliente.class));
         }
